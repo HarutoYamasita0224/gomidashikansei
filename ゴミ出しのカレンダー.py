@@ -2,9 +2,43 @@ import streamlit as st
 import streamlit_calendar as st_calendar
 from datetime import datetime, timedelta
 
-st.set_page_config(layout='wide')
+st.set_page_config(
+    page_title="ゴミ出しアプリ",
+    page_icon="🚮",
+    layout="wide",  # "centered"や"wide"を選べます
+    
+    )
 
-st.title("ゴミ出し予定アプリ")
+# カスタムCSSを埋め込む
+st.markdown(
+    """
+    <style>
+        .big-font {
+            font-size: 50px !important;
+            color: #0000FF
+        }
+        .custom-button {
+            background-color: #4CAF50; /* 緑色 */
+            color: white; /* 文字色を白に */
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px; /* 角を丸くする */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# おしゃれなタイトルを表示
+st.markdown('<p class="big-font">ゴミ出し予定アプリ</p>', unsafe_allow_html=True)
+
+
 
 # 今日の日付を取得
 今日 = datetime.now()
@@ -82,6 +116,30 @@ for i, 日付 in enumerate(曜日の日付):
             'editable': False,
         }
         event_list.append(event)  # ここで可燃ごみのイベントを追加
+
+# 不燃ごみの日を追加
+for month in range(1, 13):  # 1月から12月まで
+    year = 今日.year
+    second_wednesday = get_second_wednesday(year, month)
+    event = {
+        'id': f'second_wednesday_{month}',
+        'title': '不燃ごみ',
+        'start': second_wednesday.strftime('%Y-%m-%dT07:25:00'),
+        'end': second_wednesday.strftime('%Y-%m-%dT07:30:00'),
+        'editable': False,
+    }
+    event_list.append(event)
+
+    # 粗大ごみの日を追加
+    first_wednesday = get_first_wednesday(year, month)
+    event = {
+        'id': f'first_wednesday_{month}',
+        'title': '粗大ごみ',
+        'start': first_wednesday.strftime('%Y-%m-%dT07:25:00'),
+        'end': first_wednesday.strftime('%Y-%m-%dT07:30:00'),
+        'editable': False,
+    }
+    event_list.append(event)
 
 # 今日の予定を表示
 今日の予定 = [event for event in event_list if event['start'].startswith(今日.strftime('%Y-%m-%d'))]
