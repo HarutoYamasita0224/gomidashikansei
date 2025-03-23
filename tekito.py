@@ -20,43 +20,68 @@ for i in range(100):  # 今後100週間分の月曜日、火曜日、木曜日�
     曜日の日付.append(月曜日)
     曜日の日付.append(火曜日)  # 火曜日を追加
     曜日の日付.append(木曜日)
+    
+# 粗大ごみの日を追加するための関数
+def get_first_wednesday(year, month):
+    first_day = datetime(year, month, 1)
+    first_weekday = first_day.weekday()
+    if first_weekday <= 2:  # 1日が水曜日より前の場合
+        first_wednesday = first_day + timedelta(days=(2 - first_weekday))
+    else:  # 1日が水曜日以降の場合
+        first_wednesday = first_day + timedelta(days=(2 - first_weekday) + 7)
+
+    return first_wednesday
+
+# 不燃ごみの日を追加するための関数
+def get_second_wednesday(year, month):
+    first_day = datetime(year, month, 1)
+    first_weekday = first_day.weekday()
+    if first_weekday <= 2:  # 1日が水曜日より前の場合
+        second_wednesday = first_day + timedelta(days=(2 - first_weekday) + 7)
+    else:  # 1日が水曜日以降の場合
+        second_wednesday = first_day + timedelta(days=(2 - first_weekday) + 14)
+
+    return second_wednesday
 
 # イベントを定義
 event_list = []
 for i, 日付 in enumerate(曜日の日付):
     if 日付.weekday() == 0:  # 月曜日
         event = {
-            'id': str(i + 1),  # IDをユニークにする
-            'title': '可燃ごみ',  # 月曜日のイベント名
-            'start': 日付.strftime('%Y-%m-%dT07:25:00'),  # 開始日時
-            'end': 日付.strftime('%Y-%m-%dT07:30:00'),  # 終了日時
-            'editable': False,  # 編集不可能にする
+            'id': str(i + 1),
+            'title': '可燃ごみ',
+            'start': 日付.strftime('%Y-%m-%dT07:25:00'),
+            'end': 日付.strftime('%Y-%m-%dT07:30:00'),
+            'editable': False,
         }
+        event_list.append(event)  # ここで可燃ごみのイベントを追加
+
     elif 日付.weekday() == 1:  # 火曜日
         event = {
-            'id': str(i + 1),  # IDをユニークにする
-            'title': '資源・電池類',  # 火曜日のイベント名
-            'start': 日付.strftime('%Y-%m-%dT07:25:00'),  # 開始日時
-            'end': 日付.strftime('%Y-%m-%dT07:30:00'),  # 終了日時
-            'editable': False,  # 編集不可能にする
+            'id': str(i + 1),
+            'title': '資源・電池類',
+            'start': 日付.strftime('%Y-%m-%dT07:25:00'),
+            'end': 日付.strftime('%Y-%m-%dT07:30:00'),
+            'editable': False,
         }
-        # 火曜日に追加するイベントをリストに追加
+        event_list.append(event)  # ここで資源・電池類のイベントを追加
         event_list.append({
-            'id': str(i + 1) + "_2",  # IDをユニークにするために変更
-            'title': '紙製容器包装・雑がみ・ペットボトル・空き缶・空きびん',  # 新しいイベント名
-            'start': 日付.strftime('%Y-%m-%dT07:25:00'),  # 開始日時
-            'end': 日付.strftime('%Y-%m-%dT07:30:00'),  # 終了日時
-            'editable': False,  # 編集不可能にする
+            'id': str(i + 1) + "_2",
+            'title': '紙製容器包装・雑がみ・ペットボトル・空き缶・空きびん',
+            'start': 日付.strftime('%Y-%m-%dT07:25:00'),
+            'end': 日付.strftime('%Y-%m-%dT07:30:00'),
+            'editable': False,
         })
+
     elif 日付.weekday() == 3:  # 木曜日
         event = {
-            'id': str(i + 1),  # IDをユニークにする
-            'title': '可燃ごみ',  # 木曜日のイベント名
-            'start': 日付.strftime('%Y-%m-%dT07:25:00'),  # 開始日時
-            'end': 日付.strftime('%Y-%m-%dT07:30:00'),  # 終了日時
-            'editable': False,  # 編集不可能にする
+            'id': str(i + 1),
+            'title': '可燃ごみ',
+            'start': 日付.strftime('%Y-%m-%dT07:25:00'),
+            'end': 日付.strftime('%Y-%m-%dT07:30:00'),
+            'editable': False,
         }
-    event_list.append(event)
+        event_list.append(event)  # ここで可燃ごみのイベントを追加
 
 # 今日の予定を表示
 今日の予定 = [event for event in event_list if event['start'].startswith(今日.strftime('%Y-%m-%d'))]
